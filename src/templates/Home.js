@@ -49,6 +49,7 @@ class Home extends React.Component {
     addEventListener = () => {
         let room = "chat"
         let database = firebase.database();
+
         database.ref(room).push({
             user: this.state.user,
             message: this.state.message,
@@ -59,27 +60,35 @@ class Home extends React.Component {
         })
 
         let chatLog = firebase.database().ref(room);
-        this.addChatLog.call(Home)
-        chatLog.on("value", function (snapshot) {
-            snapshot.forEach(function (children) {
+
+        this.addChatLog.bind(Home)
+
+        chatLog.on("value", (snapshot) => {
+            snapshot.forEach((children) => {
                 console.log(children.val().user)
                 console.log(this)
-                // this.addChatLog(children.val().user, children.val().message)
+                this.addChatLog(children.val().user, children.val().message)
             })
         })
     }
 
     addChatLog = (user, message) => {
+        console.log(user)
+        console.log(message)
+
         let logchild = { user: user, message: message }
+        console.log(logchild)
         let logarray = this.state.log.slice()
+
+        console.log(logarray)
         logarray.push(logchild)
+        console.log(logarray)
         this.setState({
             log: logarray
         })
     }
 
     componentDidMount() {
-        console.log("DidMoutn")
         firebase.auth().onAuthStateChanged(
             (user) => {
                 if (user) {

@@ -3,7 +3,6 @@ import firebase from '../firebase/config.js';
 
 class Chat extends React.Component {
 
-
     render() {
         return (
             <div>
@@ -11,7 +10,11 @@ class Chat extends React.Component {
                 <input type="text" onChange={(event) => this.props.handleMessage(event)} />
                 <input type="button" onClick={() => this.props.addEventListener()} value="send" />
                 <div>
-                    {this.props.log}
+                    {this.props.log.map((chat, index) => {
+                        return (
+                            <div>{chat.user},{chat.message}</div>
+                        )
+                    })}
                 </div>
             </div>
 
