@@ -21,16 +21,16 @@ class Home extends React.Component {
         firebase.auth().signInWithRedirect(provider);
         firebase.auth().getRedirectResult().then(function (result) {
             if (result.credential) {
-                var token = result.credential.accessToken;
+                let token = result.credential.accessToken;
             }
             this.setState({
                 user: result.user,
             })
         }).catch(function (error) {
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            var email = error.email;
-            var credential = error.credential;
+            let errorCode = error.code;
+            let errorMessage = error.message;
+            let email = error.email;
+            let credential = error.credential;
         });
     }
 
@@ -47,8 +47,8 @@ class Home extends React.Component {
     }
 
     addEventListener = () => {
-        var room = "chat"
-        var database = firebase.database();
+        let room = "chat"
+        let database = firebase.database();
         database.ref(room).push({
             user: this.state.user,
             message: this.state.message,
@@ -58,20 +58,20 @@ class Home extends React.Component {
             message: null,
         })
 
-        var chatLog = firebase.database().ref(room);
+        let chatLog = firebase.database().ref(room);
         this.addChatLog.call(Home)
-
         chatLog.on("value", function (snapshot) {
             snapshot.forEach(function (children) {
                 console.log(children.val().user)
-                this.addChatLog(children.val().user, children.val().message)
+                console.log(this)
+                // this.addChatLog(children.val().user, children.val().message)
             })
         })
     }
 
     addChatLog = (user, message) => {
-        var logchild = { user: user, message: message }
-        var logarray = this.state.log.slice()
+        let logchild = { user: user, message: message }
+        let logarray = this.state.log.slice()
         logarray.push(logchild)
         this.setState({
             log: logarray
@@ -83,7 +83,7 @@ class Home extends React.Component {
         firebase.auth().onAuthStateChanged(
             (user) => {
                 if (user) {
-                    var userId = firebase.auth().currentUser
+                    let userId = firebase.auth().currentUser
                     console.log(userId.displayName)
 
                     this.setState({
