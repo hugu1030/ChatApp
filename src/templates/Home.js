@@ -8,7 +8,7 @@ class Home extends React.Component {
         super(props);
         this.state = {
             user: null,
-            message: null,
+            message: '',
             log: [],
         }
 
@@ -23,6 +23,7 @@ class Home extends React.Component {
             if (result.credential) {
                 let token = result.credential.accessToken;
             }
+
             this.setState({
                 user: result.user,
             })
@@ -38,8 +39,6 @@ class Home extends React.Component {
         this.setState({
             message: e.target.value,
         });
-        console.log(this.state.message)
-        console.log(this.state.user)
     }
 
     logout = () => {
@@ -56,17 +55,17 @@ class Home extends React.Component {
         });
 
         this.setState({
-            message: null,
+            message: '',
         })
 
         let chatLog = firebase.database().ref(room);
 
-        this.addChatLog.bind(Home)
+        //this.addChatLog.bind(Home)
 
         chatLog.on("value", (snapshot) => {
             snapshot.forEach((children) => {
-                console.log(children.val().user)
-                console.log(this)
+                //console.log(children.val().user)
+                //console.log(this)
                 this.addChatLog(children.val().user, children.val().message)
             })
         })
@@ -111,9 +110,9 @@ class Home extends React.Component {
     render() {
         return (
             <div>
-                {this.state.user ? (<ChatPage {...this.state} addEventListener={this.addEventListener} handleMessage={this.handleMessage} />
+                {this.state.user ? (<ChatPage {...this.state} addEventListener={this.addEventListener} handleMessage={this.handleMessage} logout={this.logout} />
 
-                ) : (<Login {...this.state} logout={this.loout} login={this.login} />
+                ) : (<Login {...this.state} logout={this.logout} login={this.login} />
                     )}
             </div>
         )
