@@ -3,28 +3,25 @@ import firebase from '../firebase/config.js';
 import '../components/Chat/Chat.css';
 
 class Chat extends React.Component {
-
     render() {
-        var currentUser = firebase.auth().currentUser;
+        let currentUser = firebase.auth().currentUser;
+        let currentUserLogo = currentUser.photoURL;
+        console.log(currentUserLogo)
         return (
-            <div>
-                <a>{this.props.user}</a>
-                <input type="text" onChange={(e) => this.props.handleMessage(e)} value={this.props.message} />
-                <input type="button" onClick={() => this.props.addEventListener()} value="send" />
-                <input type="button" onClick={() => this.props.logout()} value="logout" />
-                <div>
+            <div className="chatPage" >
+                <div className="userPhotoPosition"><a className="userPhoto"></a></div>
+                <div className="userNamePosition"><a className="userName">User:{this.props.user}</a></div>
+                <input type="text" className="chatText" onChange={(e) => this.props.handleMessage(e)} value={this.props.message} placeholder="Message" />
+                <input type="button" className="chatButton" onClick={() => this.props.addEventListener()} value="send" />
+                <input type="button" className="chatLogout" onClick={() => this.props.logout()} value="logout" />
+                <div className="chatDisplayArea">
                     {this.props.log.map((chat, index) => {
                         return (
-                            < div >
-                                {
-                                    (chat.user == currentUser.displayName) ? (<div className="currentUser">{chat.user},{chat.message}</div>) : (<div className="others">{chat.user},{chat.message}</div>)
-                                }
-                            </div>
+                            (chat.user == currentUser.displayName) ? (<div className="currentUser"><p className="currentUserName">{chat.user},{chat.message}</p></div>) : (<div className="others"><p className="othersName">{chat.user},{chat.message}</p></div>)
                         )
                     })}
                 </div>
             </div>
-
         )
     }
 }

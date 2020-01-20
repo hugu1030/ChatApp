@@ -109,7 +109,7 @@ class Home extends React.Component {
 
     render() {
         return (
-            <div>
+            <div class="chatAll">
                 {this.state.user ? (<ChatPage {...this.state} addEventListener={this.addEventListener} handleMessage={this.handleMessage} logout={this.logout} />
 
                 ) : (<Login {...this.state} logout={this.logout} login={this.login} />
