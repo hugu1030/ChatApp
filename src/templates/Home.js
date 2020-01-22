@@ -3,17 +3,16 @@ import Login from '../Login.js';
 import firebase from '../firebase/config.js';
 import ChatPage from './Chat.js';
 
-class Home extends React.Component {
-    constructor(props) {
+class Home extends React.Component{
+    constructor(props){
         super(props);
         this.state = {
             user: null,
+            photo: null,
             message: '',
             log: [],
         }
-
-        this.addEventListener = this.addEventListener.bind(this);
-        this.addChatLog = this.addChatLog.bind(this);
+    
     }
 
     login = () => {
@@ -46,45 +45,36 @@ class Home extends React.Component {
     }
 
     addEventListener = () => {
-        let room = "chat"
-        let database = firebase.database();
+        const room = "chat"
+        const database = firebase.database();
 
         database.ref(room).push({
             user: this.state.user,
             message: this.state.message,
+            photo: this.state.photo
         });
 
         this.setState({
             message: '',
         })
 
-        let chatLog = firebase.database().ref(room);
-
-        //this.addChatLog.bind(Home)
+        const chatLog = firebase.database().ref(room);
 
         chatLog.on("value", (snapshot) => {
+            this.setState({
+                log: []
+            })
+            const logarray = []
             snapshot.forEach((children) => {
-                //console.log(children.val().user)
-                //console.log(this)
-                this.addChatLog(children.val().user, children.val().message)
+                const logchild = { user: children.val().user, message: children.val().message, photo: children.val().photo }
+                logarray.push(logchild)
+            })
+            this.setState({
+                log: logarray,
             })
         })
-    }
 
-    addChatLog = (user, message) => {
-        console.log(user)
-        console.log(message)
 
-        let logchild = { user: user, message: message }
-        console.log(logchild)
-        let logarray = this.state.log.slice()
-
-        console.log(logarray)
-        logarray.push(logchild)
-        console.log(logarray)
-        this.setState({
-            log: logarray
-        })
     }
 
     componentDidMount() {
@@ -92,10 +82,9 @@ class Home extends React.Component {
             (user) => {
                 if (user) {
                     let userId = firebase.auth().currentUser
-                    console.log(userId.displayName)
-
                     this.setState({
-                        user: userId.displayName
+                        user: userId.displayName,
+                        photo: userId.photoURL,
                     })
                 } else {
                     this.setState({
