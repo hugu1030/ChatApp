@@ -1,10 +1,11 @@
 import React from 'react';
-import Login from '../Login.js';
+import Login from '../components/Login.js';
 import firebase from '../firebase/config.js';
-import ChatPage from './Chat.js';
+import ChatPage from '../components/Chat.js';
 
-class Home extends React.Component{
-    constructor(props){
+
+class Home extends React.Component {
+    constructor(props) {
         super(props);
         this.state = {
             user: null,
@@ -12,7 +13,7 @@ class Home extends React.Component{
             message: '',
             log: [],
         }
-    
+
     }
 
     login = () => {
