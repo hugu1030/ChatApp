@@ -4,16 +4,6 @@ import firebase from '../firebase/config.js';
 import ChatPage from '../components/Chat.js';
 
 class Home extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            user: null,
-            photo: null,
-            message: '',
-            log: [],
-        }
-
-    }
 
     login = () => {
         const provider = new firebase.auth.GoogleAuthProvider();
@@ -23,10 +13,10 @@ class Home extends React.Component {
             {
                 let token = result.credential.accessToken;
             }
-
-            this.setState({
-                user: result.user,
-            })
+            this.props.setUser(result.user)
+            // this.setState({
+            //   user: result.user,
+            // })
         }).catch(function (error) {
             let errorCode = error.code;
             let errorMessage = error.message;
@@ -36,9 +26,10 @@ class Home extends React.Component {
     }
 
     handleMessage = (e) => {
-        this.setState({
-            message: e.target.value,
-        });
+        //this.setState({
+        //    message: e.target.value,
+        //});
+        this.props.SetMessage(e.target.value)
     }
 
     logout = () => {
