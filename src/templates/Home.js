@@ -3,7 +3,6 @@ import Login from '../components/Login.js';
 import firebase from '../firebase/config.js';
 import ChatPage from '../components/Chat.js';
 
-
 class Home extends React.Component {
     constructor(props) {
         super(props);
@@ -20,7 +19,8 @@ class Home extends React.Component {
         const provider = new firebase.auth.GoogleAuthProvider();
         firebase.auth().signInWithRedirect(provider);
         firebase.auth().getRedirectResult().then(function (result) {
-            if (result.credential) {
+            if (result.credential)
+            {
                 let token = result.credential.accessToken;
             }
 
@@ -81,13 +81,15 @@ class Home extends React.Component {
     componentDidMount() {
         firebase.auth().onAuthStateChanged(
             (user) => {
-                if (user) {
+                if (user)
+                {
                     let userId = firebase.auth().currentUser
                     this.setState({
                         user: userId.displayName,
                         photo: userId.photoURL,
                     })
-                } else {
+                } else
+                {
                     this.setState({
                         user: null
                     })

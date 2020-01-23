@@ -3,6 +3,7 @@ import firebase from '../firebase/config.js';
 import '../style/Chat.css';
 
 class Chat extends React.Component {
+
     render() {
         const currentUser = firebase.auth().currentUser;
         return (
