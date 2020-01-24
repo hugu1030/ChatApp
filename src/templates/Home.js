@@ -202,6 +202,8 @@ class Home extends React.Component {
                                 </div>
                                 <div className="ChatRoomTextButton">
                                     <ChatRoomTextButton RoomSetter={this.RoomSetter} />
+                                </div>
+                                <div className="ErrorMessage">
                                     {this.state.roomNameError}
                                 </div>
                                 <Router>

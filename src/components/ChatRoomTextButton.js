@@ -1,5 +1,5 @@
 import React from 'react'
-import '../style/ChatRoomTextButtton.css'
+import '../style/ChatRoomTextButton.css'
 
 class ChatRoomTextButton extends React.Component {
     render() {
