@@ -1,11 +1,11 @@
 import React from 'react';
-import HomePage from './HomePage.js';
+import Home from './Home.js';
 
 class HomeIndex extends React.Component {
     render() {
         return (
             <div>
-                <HomePage />
+                <Home />
             </div>
         )
     }

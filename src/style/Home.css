@@ -1,0 +1,32 @@
+.chatAll {
+    background-color: #33FF99;
+    height: 100vh;
+    width: 100vw;
+}
+
+.ChatRoomContainer h1 {
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 50px;
+    background: #33FF99;
+}
+
+.ChatRoomContainer {
+    background: #33FF99;
+}
+
+.ChatRoomLinkContainer {
+    background: red;
+}
+
+.ChatRoomTextBox {
+    position: fixed;
+    top: 100px;
+    left: 33%;
+}
+
+.ChatRoomTextButton {
+    position: fixed;
+    top: 100px;
+    left: 40%;
+}

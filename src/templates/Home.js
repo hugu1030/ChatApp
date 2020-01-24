@@ -2,11 +2,21 @@ import React from 'react';
 import Login from '../components/Login.js';
 import firebase from '../firebase/config.js';
 import ChatPage from '../components/Chat.js';
+import ChatRoomTextBox from '../components/ChatRoomTextBox.js';
+import ChatRoomTextButton from '../components/ChatRoomTextButton.js';
+import '../style/Home.css'
+
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
 
 class Home extends React.Component {
     constructor(props) {
         super(props);
-        this.state({
+        this.state = {
             user: null,
             photo: null,
             message: '',
@@ -14,17 +24,14 @@ class Home extends React.Component {
             roomNumTotal: 0,
             selectedRoomNum: null,
             roomName: '',
-        })
-    }
-    UserRegister = (user, photo) => {
-        this.setState({
-            user: user,
-            photo: photo,
-        })
-
+            roomNameError: '',
+            roomArray: [],
+            doneMakeRoom: 0,
+        }
     }
 
     SetUser = (e) => {
+        console.log(this.state.roomNumTotal)
         this.setStata({
             user: e.target.value
         })
@@ -40,10 +47,24 @@ class Home extends React.Component {
         })
     }
 
-    PageNameMaker = () => {
+    RoomSetter = () => {
+        if (this.state.roomName == '')
+        {
+            this.setState({
+                roomNameError: "文字を入力してください"
+            })
+            return
+        }
         const i = 1
+        const ChatArrayInformation = this.state.roomArray.slice()
+        const ChatObject = { roomName: this.state.roomName, roomNum: this.state.roomNumTotal + i, roomNumTotal: this.state.roomNumTotal + 1 }
+        ChatArrayInformation.push(ChatObject)
+        console.log(ChatObject)
         this.setState({
-            roomNumTotal: this.state.roomNumTotal + i,
+            roomArray: ChatArrayInformation,
+            roomName: '',
+            roomNumTotal: this.state.roomNumTotal + 1,
+            roomNameError: ''
         })
     }
 
@@ -53,9 +74,23 @@ class Home extends React.Component {
         })
     }
 
-    RoomNumSelecter = (num) => {
+    ClickChatRoom = (num) => {
         this.setState({
+            doneMakeRoom: 1,
             selectedRoomNum: num
+        })
+    }
+
+    RoomNumSelecter = () => {
+        this.setState({
+            selectedRoomNum: 1
+        })
+        console.log("RoomNumSelecter")
+    }
+
+    handleDoneMakeRoom = () => {
+        this.setState({
+            doneMakeRoom: 1
         })
     }
 
@@ -67,10 +102,9 @@ class Home extends React.Component {
             {
                 let token = result.credential.accessToken;
             }
-            this.props.setUser(result.user)
-            // this.setState({
-            //   user: result.user,
-            // })
+            this.setState({
+                user: result.user,
+            })
         }).catch(function (error) {
             let errorCode = error.code;
             let errorMessage = error.message;
@@ -93,7 +127,8 @@ class Home extends React.Component {
     addEventListener = () => {
         const room = "chat"
         const database = firebase.database();
-
+        console.log(this.state.selectedRoomNum)
+        //console.log(this.state.)
         database.ref(this.state.selectedRoomNum).push({
             user: this.state.user,
             message: this.state.message,
@@ -119,38 +154,73 @@ class Home extends React.Component {
                 log: logarray,
             })
         })
-
-
     }
 
-    /* componentDidMount() {
-         firebase.auth().onAuthStateChanged(
-             (user) => {
-                 if (user)
-                 {
-                     let userId = firebase.auth().currentUser
-                     this.setState({
-                         user: userId.displayName,
-                         photo: userId.photoURL,
-                     })
-                 } else
-                 {
-                     this.setState({
-                         user: null
-                     })
-                 }
- 
-             }
-         )
-     }   */
+    componentDidMount() {
+        firebase.auth().onAuthStateChanged(
+            (user) => {
+                if (user)
+                {
+                    let userId = firebase.auth().currentUser
+                    this.setState({
+                        user: userId.displayName,
+                        photo: userId.photoURL,
+                    })
+                }
+                else
+                {
+                    this.setState({
+                        user: null
+                    })
+                }
+            }
+        )
+    }
 
     render() {
+        const PageLink = [];
+        const PageRouter = [];
+        let roomNumTotal = this.state.roomNumTotal
+        for (let i = 0; i < roomNumTotal; i++)
+        {
+            PageLink.push(<li><Link to='roomNumTotal' onClick={() => this.ClickChatRoom(roomNumTotal)}>Room:{this.state.roomArray[i].roomName}</Link></li>)
+            PageRouter.push(<Route path='roomNumTotal'><ChatPage {...this.state} /></Route>)
+        }
+        /* console.log(this.state.roomName)
+         console.log(this.state.roomNumTotal)
+         console.log(this.state.doneMakeRoom)
+         console.log(this.state.selectedRoomNum) */
         return (
             <div class="chatAll">
-                {this.state.user ? (<ChatPage {...this.state} addEventListener={this.addEventListener} handleMessage={this.handleMessage} logout={this.logout} />
+                {
+                    this.state.user ?
+                        (this.state.doneMakeRoom == 1 ? (<ChatPage {...this.state} addEventListener={this.addEventListener} handleMessage={this.handleMessage} logout={this.logout} />) :
+                            (<div className="ChatRoomContainer">
+                                <h1>Enter Chat Name</h1>
+                                <div className="ChatRoomTextBox">
+                                    <ChatRoomTextBox  {...this.state} RoomNameHandler={this.RoomNameHandler} />
+                                </div>
+                                <div className="ChatRoomTextButton">
+                                    <ChatRoomTextButton RoomSetter={this.RoomSetter} />
+                                    {this.state.roomNameError}
+                                </div>
+                                <Router>
+                                    <div className="ChatRoomLinkContainer">
+                                        <nav>
+                                            <ul>
+                                                {PageLink}
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                    <Switch>
+                                        {PageRouter}
+                                    </Switch>
+                                </Router>
+                            </div>
 
-                ) : (<Login {...this.state} logout={this.logout} login={this.login} />
-                    )}
+                            )) : (<Login {...this.state} logout={this.logout} login={this.login} />
+                        )
+                }
             </div>
         )
     }

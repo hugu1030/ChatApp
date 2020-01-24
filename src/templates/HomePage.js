@@ -35,13 +35,13 @@ class HomePage extends React.Component {
         const PageLink = [];
         const PageRouter = [];
         const roomNumTotal = React.createRef().Home.RoomNumTotalGetter()
+
+        for (let i = 0; i < roomNumTotal; i++)
         {
-            for (let i = 0; i < roomNumTotal; i++)
-            {
-                PageLink.push(<li><Link to='roomNumTotal' oncLick={this.refs.Home.RoomNumSelecter(this.rootNumTotal)}>Room:{this.refs.Home.RoomNumTotalGetter()}</Link></li>)
-                PageRouter.push(<Route path='roomNumTotal'><Home GetRoomNumTotal={this.GetRoomNumTotal(); } /></Route>)
-            }
+            PageLink.push(<li><Link to='roomNumTotal' oncLick={this.refs.Home.RoomNumSelecter(this.rootNumTotal)}>Room:{this.refs.Home.RoomNumTotalGetter()}</Link></li>)
+            PageRouter.push(<Route path='roomNumTotal'><Home GetRoomNumTotal={this.GetRoomNumTotal(); } /></Route>)
         }
+
 
         return (
             <Router>
