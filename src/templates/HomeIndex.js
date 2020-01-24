@@ -1,7 +1,7 @@
 import React from 'react';
 import Home from './Home.js';
 
-class Home_index extends React.Component {
+class HomeIndex extends React.Component {
     render() {
         return (
             <div>
@@ -11,4 +11,4 @@ class Home_index extends React.Component {
     }
 }
 
-export default Home_index;
+export default HomeIndex;
