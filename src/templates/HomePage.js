@@ -1,5 +1,6 @@
 import React from 'react';
 import Home from './Home.js';
+import firebase from '../firebase/config.js';
 
 import {
     BrowserRouter as Router,
@@ -11,36 +12,34 @@ import {
 class HomePage extends React.Component {
 
     componentDidMount() {
+        console.log(this.refs);
         firebase.auth().onAuthStateChanged(
             (user) => {
                 if (user)
                 {
                     let userId = firebase.auth().currentUser
-                    this.setState({                          //初期登録
-                        user: userId.displayName,
-                        photo: userId.photoURL,
-                    })
+                    this.refs.Home.UserRegister(userId.displayName, userId.photoURL)
                 } else
                 {
-                    this.setState({
-                        user: null,
-                        photo: null
-                    })
+                    this.refs.Home.UserRegister(null, null)
                 }
-
             }
         )
+    }
+
+    GetRoomNumTotal(roomNumTotal) {
+        this.setState({ roomNumTotal })
     }
 
     render() {
         const PageLink = [];
         const PageRouter = [];
-        roomNumTotal = this.refs.Home.state.roomNumTotal
+        const roomNumTotal = React.createRef().Home.RoomNumTotalGetter()
         {
             for (let i = 0; i < roomNumTotal; i++)
             {
-                PageLink.push(<li><Link to='roomNumTotal' oncLick={this.refs.Home.RoomNumSelecter(rootNumTotal)}>Room:{this.state.roomNumTotal}</Link></li>)
-                PageRouter.push(<Route path='roomNumTotal'><Home /></Route>)
+                PageLink.push(<li><Link to='roomNumTotal' oncLick={this.refs.Home.RoomNumSelecter(this.rootNumTotal)}>Room:{this.refs.Home.RoomNumTotalGetter()}</Link></li>)
+                PageRouter.push(<Route path='roomNumTotal'><Home GetRoomNumTotal={this.GetRoomNumTotal(); } /></Route>)
             }
         }
 

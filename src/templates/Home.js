@@ -16,7 +16,6 @@ class Home extends React.Component {
             roomName: '',
         })
     }
-
     UserRegister = (user, photo) => {
         this.setState({
             user: user,
@@ -24,10 +23,15 @@ class Home extends React.Component {
         })
 
     }
+
     SetUser = (e) => {
         this.setStata({
             user: e.target.value
         })
+    }
+
+    RoomNumTotalGetter = () => {
+        return this.state.roomNumTotal
     }
 
     SetMessage = (e) => {
