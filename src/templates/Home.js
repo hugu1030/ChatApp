@@ -4,6 +4,56 @@ import firebase from '../firebase/config.js';
 import ChatPage from '../components/Chat.js';
 
 class Home extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state({
+            user: null,
+            photo: null,
+            message: '',
+            log: [],
+            roomNumTotal: 0,
+            selectedRoomNum: null,
+            roomName: '',
+        })
+    }
+
+    UserRegister = (user, photo) => {
+        this.setState({
+            user: user,
+            photo: photo,
+        })
+
+    }
+    SetUser = (e) => {
+        this.setStata({
+            user: e.target.value
+        })
+    }
+
+    SetMessage = (e) => {
+        this.setState({
+            message: e.target.value
+        })
+    }
+
+    PageNameMaker = () => {
+        const i = 1
+        this.setState({
+            roomNumTotal: this.state.roomNumTotal + i,
+        })
+    }
+
+    RoomNameHandler = (e) => {
+        this.setState({
+            roomName: e.target.value,
+        })
+    }
+
+    RoomNumSelecter = (num) => {
+        this.setState({
+            selectedRoomNum: num
+        })
+    }
 
     login = () => {
         const provider = new firebase.auth.GoogleAuthProvider();
@@ -26,10 +76,10 @@ class Home extends React.Component {
     }
 
     handleMessage = (e) => {
-        //this.setState({
-        //    message: e.target.value,
-        //});
-        this.props.SetMessage(e.target.value)
+        this.setState({
+            message: e.target.value,
+        });
+
     }
 
     logout = () => {
@@ -40,7 +90,7 @@ class Home extends React.Component {
         const room = "chat"
         const database = firebase.database();
 
-        database.ref(room).push({
+        database.ref(this.state.selectedRoomNum).push({
             user: this.state.user,
             message: this.state.message,
             photo: this.state.photo
@@ -50,7 +100,7 @@ class Home extends React.Component {
             message: '',
         })
 
-        const chatLog = firebase.database().ref(room);
+        const chatLog = firebase.database().ref(this.state.selectedRoomNum);
 
         chatLog.on("value", (snapshot) => {
             this.setState({
@@ -69,26 +119,26 @@ class Home extends React.Component {
 
     }
 
-    componentDidMount() {
-        firebase.auth().onAuthStateChanged(
-            (user) => {
-                if (user)
-                {
-                    let userId = firebase.auth().currentUser
-                    this.setState({
-                        user: userId.displayName,
-                        photo: userId.photoURL,
-                    })
-                } else
-                {
-                    this.setState({
-                        user: null
-                    })
-                }
-
-            }
-        )
-    }
+    /* componentDidMount() {
+         firebase.auth().onAuthStateChanged(
+             (user) => {
+                 if (user)
+                 {
+                     let userId = firebase.auth().currentUser
+                     this.setState({
+                         user: userId.displayName,
+                         photo: userId.photoURL,
+                     })
+                 } else
+                 {
+                     this.setState({
+                         user: null
+                     })
+                 }
+ 
+             }
+         )
+     }   */
 
     render() {
         return (

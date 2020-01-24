@@ -1,5 +1,6 @@
 import React from 'react';
 import Home from './Home.js';
+
 import {
     BrowserRouter as Router,
     Switch,
@@ -7,48 +8,42 @@ import {
     Link
 } from "react-router-dom";
 
-
 class HomePage extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state({
-            user: null,
-            photo: null,
-            message: '',
-            log: [],
-            roomNumTotal: 0
-        })
+
+    componentDidMount() {
+        firebase.auth().onAuthStateChanged(
+            (user) => {
+                if (user)
+                {
+                    let userId = firebase.auth().currentUser
+                    this.setState({                          //初期登録
+                        user: userId.displayName,
+                        photo: userId.photoURL,
+                    })
+                } else
+                {
+                    this.setState({
+                        user: null,
+                        photo: null
+                    })
+                }
+
+            }
+        )
     }
 
-    SetUser = (e) => {
-        this.setStata({
-            user: e.target.value
-        })
-    }
-    SetMessage = (e) => {
-        this.setState({
-            message: e.target.value
-        })
-    }
-
-    PageNumAdder = () => {
-        const i = 1
-        this.setState({
-            roomNumTotal: this.state.roomNumTotal + i
-        })
-
-
-    }
     render() {
         const PageLink = [];
         const PageRouter = [];
+        roomNumTotal = this.refs.Home.state.roomNumTotal
         {
-            for (let i = 0; i < this.state.rootNumTotal; i++)
+            for (let i = 0; i < roomNumTotal; i++)
             {
-                PageLink.push(<li><Link to="this.state.rootNumTotal" >Room:{this.state.roomNumTotal}</Link></li>)
-                PageRouter.push(<Route path="this.state.rootNumTotal"><Home onClick={this.state.PageNumAdder} {...this.state} SetUser={this.SetUser} SetMessag={this.SetMessage} /></Route >)
+                PageLink.push(<li><Link to='roomNumTotal' oncLick={this.refs.Home.RoomNumSelecter(rootNumTotal)}>Room:{this.state.roomNumTotal}</Link></li>)
+                PageRouter.push(<Route path='roomNumTotal'><Home /></Route>)
             }
         }
+
         return (
             <Router>
                 <div>
