@@ -1,7 +1,10 @@
 .Login {
     background: red;
+    position: fixed;
+    top: 3300px;
 }
 
 .LoginButton {
     background-color: red;
+    border-radius: 10px;
 }
