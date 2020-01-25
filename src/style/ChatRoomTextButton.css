@@ -1,11 +1,11 @@
 .ChatRoomTextButton {
     font-family: fantasy;
-    width: 6%;
-    height: 6%;
-    border-radius: 1px;
+    width: 55px;
+    height: 40px;
+    border-radius: 2px;
 }
 
-.ChatRoomTextButton :hover {
-    background-color: #EEEEEE;
+.ChatRoomTextButton :focus {
+    background-color: red;
     border: solid 3px black;
 }

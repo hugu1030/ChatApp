@@ -181,9 +181,10 @@ class Home extends React.Component {
         const PageLink = [];
         const PageRouter = [];
         let roomNumTotal = this.state.roomNumTotal
+
         for (let i = 0; i < roomNumTotal; i++)
         {
-            PageLink.push(<li><Link to='roomNumTotal' onClick={() => this.ClickChatRoom(roomNumTotal)}>Room:{this.state.roomArray[i].roomName}</Link></li>)
+            PageLink.push(< Link to='roomNumTotal' onClick={() => this.ClickChatRoom(roomNumTotal)}><div className="ChatRoomLinkBox" >Room名:{this.state.roomArray[i].roomName}</div></Link>)
             PageRouter.push(<Route path='roomNumTotal'><ChatPage {...this.state} /></Route>)
         }
         /* console.log(this.state.roomName)
@@ -200,7 +201,7 @@ class Home extends React.Component {
                                 <div className="ChatRoomTextBox">
                                     <ChatRoomTextBox  {...this.state} RoomNameHandler={this.RoomNameHandler} />
                                 </div>
-                                <div className="ChatRoomTextButton">
+                                <div className="ChatRoomTextButtonP">
                                     <ChatRoomTextButton RoomSetter={this.RoomSetter} />
                                 </div>
                                 <div className="ErrorMessage">
@@ -208,11 +209,7 @@ class Home extends React.Component {
                                 </div>
                                 <Router>
                                     <div className="ChatRoomLinkContainer">
-                                        <nav>
-                                            <ul>
-                                                {PageLink}
-                                            </ul>
-                                        </nav>
+                                        {PageLink}
                                     </div>
                                     <Switch>
                                         {PageRouter}

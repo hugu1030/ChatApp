@@ -1,7 +1,8 @@
 .chatAll {
+    position: relative;
     background-color: #33FF99;
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
 }
 
 .ChatRoomContainer h1 {
@@ -13,27 +14,51 @@
 }
 
 .ChatRoomContainer {
+    width: 100vw;
     background: #33FF99;
+    display: inline-block;
+    max-height: 100%;
 }
 
 .ChatRoomLinkContainer {
-    background: red;
+    position: relative;
+    top: 100px;
+    left: 25%;
+    width: 50%;
+    justify-content: center;
+    margin-bottom: 100%;
+}
+
+.ChatRoomLinkBox {
+    margin: 0 auto;
+    margin-top: 60px;
+    text-align: center;
+    padding-top: 3%;
+    height: 40%;
+    width: 30vw;
+    height: 10vh;
+    background: #FFFAFA;
+    border-radius: 8px;
+}
+
+.ChatRoomLinkBox :focus {
+    background: #FFFFCC;
 }
 
 .ChatRoomTextBox {
-    position: fixed;
-    top: 100px;
-    left: 33%;
+    position: absolute;
+    top: 25px;
+    left: 25%;
 }
 
-.ChatRoomTextButton {
-    position: fixed;
-    top: 149px;
-    left: 67%;
+.ChatRoomTextButtonP {
+    position: absolute;
+    top: 155px;
+    left: 68%;
 }
 
 .ErrorMessage {
-    position: fixed;
-    left: 43%;
-    top: 28%;
+    position: absolute;
+    left: 45%;
+    top: 13%;
 }
