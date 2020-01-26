@@ -5,12 +5,13 @@ import '../style/Chat.css';
 class Chat extends React.Component {
 
     componentDidMount() {
+        console.log("componentDidMount")
         const database = firebase.database()
         let selectedRoomNumLog = database.ref("selectedRoomNum")
         let selectedRoomNum = 0
         selectedRoomNumLog.on("value", (snapshot) => {
             snapshot.forEach((children) => {
-                if (children.val().user == this.state.user)
+                if (children.val().user == this.props.user)
                 {
                     selectedRoomNum = children.val().selectedRoomNum
                 }
@@ -23,15 +24,15 @@ class Chat extends React.Component {
     render() {
         const currentUser = firebase.auth().currentUser;
         const database = firebase.database()
-        const ChatLog = database.ref(this.props.selectedRoomNum)
-        console.log(this.props.state.selectedRoomNum)
-
+        let selectedRoomNum = this.props.selectedRoomNum
+        const ChatLog = database.ref('selectedRoomNum')
         return (
             <div className="chatPage">
                 <div className="userNamePosition"><a className="userName">User:{this.props.user}</a></div>
                 <input type="text" className="chatText" onChange={(e) => this.props.handleMessage(e)} value={this.props.message} placeholder="Message" />
                 <input type="button" className="chatButton" onClick={() => this.props.addEventListener()} value="send" />
                 <input type="button" className="chatLogout" onClick={() => this.props.logout()} value="logout" />
+                <input type="button" className="chatBack" onClick={() => this.props.chatBack()} value="back" />
                 <div className="chatDisplayArea">
                     {ChatLog.on("value", (snapshot) => {
                         snapshot.forEach((children) => {
