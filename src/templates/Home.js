@@ -29,34 +29,37 @@ class Home extends React.Component {
         }
     }
 
-    SetUser = (e) => {
+    setUser = (e) => {
         console.log(this.state.roomNumTotal)
         this.setStata({
             user: e.target.value
         })
     }
 
-    RoomNumTotalGetter = () => {
+    roomNumTotalGetter = () => {
         return this.state.roomNumTotal
     }
 
-    SetMessage = (e) => {
+    setMessage = (e) => {
         this.setState({
             message: e.target.value
         })
     }
 
-    RoomSetter = () => {
-        let roomNum = 0;
+    roomSetter = () => {
+        let roomNum;
         const database = firebase.database();
         const RoomInformation = "RoomInformation";
         const roomNumInfo = database.ref("roomNum");
+
         roomNumInfo.on("value", (snapshot) => {
             snapshot.forEach((children) => {
                 if (children.val().roomNum != 0)
                 {
+                    console.log("ifが呼ばれた")
                     roomNum = 0
                 }
+                console.log(roomNum)
             })
         })
         console.log(roomNum)
@@ -122,13 +125,13 @@ class Home extends React.Component {
         console.log("RoomSetterのsetStateが呼ばれました")
     }
 
-    RoomNameHandler = (e) => {
+    roomNameHandler = (e) => {
         this.setState({
             roomName: e.target.value,
         })
     }
 
-    ClickChatRoom = (num) => {
+    clickChatRoom = (num) => {
         const database = firebase.database()
         database.ref("selectedRoomNum").push({
             selectedRoomNum: num,
@@ -144,7 +147,7 @@ class Home extends React.Component {
         })
     }
 
-    RoomNumSelecter = (num) => {
+    roomNumSelecter = (num) => {
         this.setState({
             selectedRoomNum: num
         })
@@ -288,7 +291,7 @@ class Home extends React.Component {
             <div class="chatAll">
                 {
                     this.state.user ?
-                        (doneMakeRoom == 1 ? (<ChatPage {...this.state} addEventListener={this.addEventListener} chatBack={this.chatBack} handleMessage={this.handleMessage} logout={this.logout} RoomNumSelecter={this.RoomNumSelecter} />) :
+                        (doneMakeRoom == 1 ? (<ChatPage {...this.state} addEventListener={this.addEventListener} chatBack={this.chatBack} handleMessage={this.handleMessage} logout={this.logout} RoomNumSelecter={this.roomNumSelecter} />) :
                             (
                                 <div className="ChatRoomContainer">
                                     <h1>Enter Chat Name</h1>
@@ -296,10 +299,10 @@ class Home extends React.Component {
                                         {this.state.roomNameError}
                                     </div>
                                     <div className="ChatRoomTextBox">
-                                        <ChatRoomTextBox  {...this.state} RoomNameHandler={this.RoomNameHandler} />
+                                        <ChatRoomTextBox  {...this.state} RoomNameHandler={this.roomNameHandler} />
                                     </div>
                                     <div className="ChatRoomTextButtonP">
-                                        <ChatRoomTextButton RoomSetter={this.RoomSetter} />
+                                        <ChatRoomTextButton RoomSetter={this.roomSetter} />
                                     </div>
                                     <Router>
                                         <div className="ChatRoomLinkContainer">

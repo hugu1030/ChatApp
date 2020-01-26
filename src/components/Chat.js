@@ -37,7 +37,12 @@ class Chat extends React.Component {
                     {ChatLog.on("value", (snapshot) => {
                         snapshot.forEach((children) => {
                             return (
-                                (children.val().user == currentUser.displayName) ? (<div className="currentUser"><div className="userPhotoPosition"><img src={children.val().photo} className="userPhoto" /></div><div className="currentUserMessagePosition"><p className="currentUserMessage">{children.val().message}</p></div> <div className="currentUserNamePosition"><p className="currentUserName">{children.val().user}</p></div></div>) : (<div className="others"><div className="othersPhotoPosition"><img src={children.val().photo} className="othersPhoto" /></div><div className="othersMessagePosition"><p className="othersMessage">{children.val().message}</p></div> <div className="othersNamePosition"><p className="othersName">{children.val().user}</p></div></div>)
+                                (children.val().user == currentUser.displayName) ? (<div className="currentUser"><div className="userPhotoPosition"><img src={children.val().photo} className="userPhoto" /></div>
+                                    <div className="currentUserMessagePosition"><p className="currentUserMessage">{children.val().message}</p></div>
+                                    <div className="currentUserNamePosition"><p className="currentUserName">{children.val().user}</p></div></div>)
+                                    : (<div className="others"><div className="othersPhotoPosition"><img src={children.val().photo} className="othersPhoto" /></div>
+                                        <div className="othersMessagePosition"><p className="othersMessage">{children.val().message}</p></div>
+                                        <div className="othersNamePosition"><p className="othersName">{children.val().user}</p></div></div>)
                             )
                         })
                     })
