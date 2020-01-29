@@ -1,3 +1,24 @@
 .ChatRoomTextButton {
-    background: red;
+    font-family: fantasy;
+    width: 55px;
+    height: 40px;
+    border-radius: 2px;
+}
+
+.ChatRoomTextButton :focus {
+    background-color: red;
+    border: solid 3px black;
+}
+
+@media screen and (min-width:768px) {
+    .ChatRoomTextButton {
+        font-family: fantasy;
+        width: 69px;
+        height: 50px;
+        border-radius: 2px;
+    }
+    .ChatRoomTextButton :focus {
+        background-color: red;
+        border: solid 3px black;
+    }
 }
