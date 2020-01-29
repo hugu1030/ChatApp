@@ -12,7 +12,6 @@ import {
     Link
 } from "react-router-dom";
 
-
 class Home extends React.Component {
     constructor(props) {
         super(props);
@@ -47,22 +46,10 @@ class Home extends React.Component {
     }
 
     roomSetter = () => {
-        let roomNum;
+        var roomNum;
         const database = firebase.database();
         const RoomInformation = "RoomInformation";
         const roomNumInfo = database.ref("roomNum");
-
-        roomNumInfo.on("value", (snapshot) => {
-            snapshot.forEach((children) => {
-                if (children.val().roomNum != 0)
-                {
-                    console.log("ifが呼ばれた")
-                    roomNum = 0
-                }
-                console.log(roomNum)
-            })
-        })
-        console.log(roomNum)
         if (this.state.roomName == '')                  //OK
         {
             this.setState({
@@ -71,31 +58,43 @@ class Home extends React.Component {
             return
         }
 
-        if (roomNumInfo == 0)
-        {
-            console.log("ifが呼ばれた")
-            roomNumInfo.push({
-                roomNum: 1
-            })
-        } else
-        {
-            console.log("RoomSettlerのelse文")
-            let roomNumMax = 0;
-            roomNumInfo.on("value", (snapshot) => {
+        roomNumInfo.on("value", (snapshot) => {
+            console.log("a")
+            console.log(snapshot.val())
+            if (snapshot.val() == null)
+            {
+                console.log("push")
+                roomNumInfo.push({
+                    roomNum: 1
+                })
+            }
+        })
+
+        let roomNumMax = 0;
+
+        var result = new Promise((resolve) => {
+            roomNumInfo.on("value", (snapshot) => {                            //非同期だから少し遅い
                 snapshot.forEach((children) => {
+                    console.log(children.val().roomNum)
                     if (roomNumMax < children.val().roomNum)
                     {
                         roomNumMax = children.val().roomNum
                     }
+                    console.log(roomNumMax)
                 })
                 console.log(roomNumMax)
-                roomNumInfo.push({
-                    roomNum: roomNumMax + 1
-                }
-                )
-            }
-            )
-        }
+                //                resolve(roomNumMax)
+            })
+            resolve(roomNumMax)
+        })
+
+        result.then((innerResult) => {
+            console.log(innerResult)     //なぜ0と表示される?
+            roomNumInfo.push({
+                roomNum: innerResult
+            })
+        })
+
 
         let roomNumTemp = 0;
         const roomNumFinal = 0;
