@@ -3,31 +3,27 @@ import firebase from '../firebase/config.js';
 import '../style/Chat.css';
 
 class Chat extends React.Component {
-
     componentDidMount() {
-        console.log("componentDidMount")
+        console.log("ChatのcomponentDidMountです")
         const database = firebase.database()
-        let selectedRoomNumLog = database.ref("selectedRoomNum")
-        let selectedRoomNum = 0
-        selectedRoomNumLog.on("value", (snapshot) => {
-            snapshot.forEach((children) => {
-                if (children.val().user == this.props.user)
-                {
-                    selectedRoomNum = children.val().selectedRoomNum
-                }
-                console.log(selectedRoomNum)
-            })
+        let selectedRoomNum = 0;
+        let selectedRoomNumLog = database.ref("nowRoomNum" + this.props.user)
+        selectedRoomNumLog.once("value").then((snapshot) => {
+            selectedRoomNum = snapshot.val().nowSelectedRoomNum
+            this.props.nowRoomNumSetter(selectedRoomNum)
         })
-        this.props.RoomNumSelecter(selectedRoomNum)
     }
 
     render() {
+        console.log(this.props.nowRoomNum)
+        let nowRoomNum = this.props.nowRoomNum;
         const currentUser = firebase.auth().currentUser;
-        const database = firebase.database()
-        let selectedRoomNum = this.props.selectedRoomNum
-        const ChatLog = database.ref('selectedRoomNum')
+        const database = firebase.database();
+        let selectedRoomNum;
+        const ChatLog = database.ref('nowRoomNum');
         return (
-            <div className="chatPage">
+            < div className="chatPage" >
+                {console.log("returnが呼ばれ増田")}
                 <div className="userNamePosition"><a className="userName">User:{this.props.user}</a></div>
                 <input type="text" className="chatText" onChange={(e) => this.props.handleMessage(e)} value={this.props.message} placeholder="Message" />
                 <input type="button" className="chatButton" onClick={() => this.props.addEventListener()} value="send" />
@@ -37,7 +33,7 @@ class Chat extends React.Component {
                     {ChatLog.on("value", (snapshot) => {
                         snapshot.forEach((children) => {
                             return (
-                                (children.val().user == currentUser.displayName) ? (<div className="currentUser"><div className="userPhotoPosition"><img src={children.val().photo} className="userPhoto" /></div>
+                                (children.val().user === currentUser.displayName) ? (<div className="currentUser"><div className="userPhotoPosition"><img src={children.val().photo} className="userPhoto" /></div>
                                     <div className="currentUserMessagePosition"><p className="currentUserMessage">{children.val().message}</p></div>
                                     <div className="currentUserNamePosition"><p className="currentUserName">{children.val().user}</p></div></div>)
                                     : (<div className="others"><div className="othersPhotoPosition"><img src={children.val().photo} className="othersPhoto" /></div>
@@ -48,7 +44,7 @@ class Chat extends React.Component {
                     })
                     })}
                 </div>
-            </div>
+            </div >
         )
     }
 }

@@ -15,12 +15,14 @@ import {
 class Home extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             user: null,
             photo: null,
             message: '',
             roomNumTotal: 0,
             selectedRoomNum: null,
+            nowRoomNum: 0,
             roomName: '',
             roomNameError: '',
             doneMakeRoom: 0,
@@ -45,83 +47,53 @@ class Home extends React.Component {
         })
     }
 
-    roomSetter = () => {
-        var roomNum;
+    nowRoomNumSetter = (nowRoomNum) => {
+        this.setState({
+            nowRoomNum: nowRoomNum,
+        })
+
+    }
+
+
+    roomAdder = () => {
         const database = firebase.database();
-        const RoomInformation = "RoomInformation";
-        const roomNumInfo = database.ref("roomNum");
-        if (this.state.roomName == '')                  //OK
-        {
-            this.setState({
-                roomNameError: "文字を入力してください"
-            })
-            return
-        }
-
-        roomNumInfo.on("value", (snapshot) => {
-            console.log("a")
+        const roomNum = database.ref("roomNum");
+        var number = 1;
+        roomNum.once("value").then((snapshot) => {
             console.log(snapshot.val())
-            if (snapshot.val() == null)
-            {
-                console.log("push")
-                roomNumInfo.push({
-                    roomNum: 1
+            if (snapshot.val() === null) {
+                roomNum.set({
+                    roomNum: 1,
                 })
+                number = 1
+            } else {
+                console.log("roomAdderのelse文")
+                console.log(snapshot.val().roomNum)
+                roomNum.set({
+                    roomNum: snapshot.val().roomNum + 1,
+                })
+                number = snapshot.val().roomNum + 1
             }
+            this.roomInformationAdder(number, this.state.roomName)
+            console.log("roomInformationAdderへ行きます")
         })
+    }
 
-        let roomNumMax = 0;
-
-        var result = new Promise((resolve) => {
-            roomNumInfo.on("value", (snapshot) => {                            //非同期だから少し遅い
-                snapshot.forEach((children) => {
-                    console.log(children.val().roomNum)
-                    if (roomNumMax < children.val().roomNum)
-                    {
-                        roomNumMax = children.val().roomNum
-                    }
-                    console.log(roomNumMax)
-                })
-                console.log(roomNumMax)
-                //                resolve(roomNumMax)
-            })
-            resolve(roomNumMax)
-        })
-
-        result.then((innerResult) => {
-            console.log(innerResult)     //なぜ0と表示される?
-            roomNumInfo.push({
-                roomNum: innerResult
+    roomInformationAdder = (number, roomName) => {
+        const database = firebase.database();
+        const RoomNumInformation = database.ref("RoomInformation")
+        RoomNumInformation.once("value").then((snapshot) => {
+            RoomNumInformation.push({
+                roomName: roomName,
+                roomNum: number,
             })
         })
 
-
-        let roomNumTemp = 0;
-        const roomNumFinal = 0;
-        const roomName = this.state.roomName
-
-        roomNumInfo.on("value", (snapshot) => {
-            snapshot.forEach((children) => {
-                if (roomNumTemp < children.val().roomNum)
-                {
-                    roomNumTemp = children.val().roomNum
-                    console.log("roomNumTempの値:" + roomNumTemp)             //OK
-                }
-            })
-            database.ref(RoomInformation).push({
-                user: roomName,
-                roomNum: roomNumTemp,
-            })
-        })
-
-        console.log("roomNumTempの値:" + roomNumTemp)
         this.setState({
             // roomArray: ChatArrayInformation,
             roomName: '',
-            roomNumTotal: this.state.roomNumTotal + 1,
-            roomNameError: ''
+            roomNameError: '',
         })
-        console.log("RoomSetterのsetStateが呼ばれました")
     }
 
     roomNameHandler = (e) => {
@@ -136,6 +108,12 @@ class Home extends React.Component {
             selectedRoomNum: num,
             user: this.state.user
         })
+
+        database.ref("nowRoomNum" + this.state.user).set({
+            nowSelectedRoomNum: num,
+            user: this.state.user,
+        })
+
         database.ref("doneMakeRoom").push({          //doneGoneRoomって名前を変えた方がいい。部屋選択画面に戻ると、doneMakeRoom:0,user:this.state.userとしてあげる
             doneMakeRoom: 1,
             user: this.state.user,
@@ -156,8 +134,7 @@ class Home extends React.Component {
         const provider = new firebase.auth.GoogleAuthProvider();
         firebase.auth().signInWithRedirect(provider);
         firebase.auth().getRedirectResult().then(function (result) {
-            if (result.credential)
-            {
+            if (result.credential) {
                 let token = result.credential.accessToken;
             }
             this.setState({
@@ -195,8 +172,7 @@ class Home extends React.Component {
     }
 
     addEventListener = () => {
-        if (this.state.message == '')
-        {
+        if (this.state.message == '') {
             return
         }
         const database = firebase.database();
@@ -204,8 +180,7 @@ class Home extends React.Component {
         let selectedRoomNum = 0
         selectedRoomNumLog.on("value", (snapshot) => {
             snapshot.forEach((children) => {
-                if (children.val().user == this.state.user)
-                {
+                if (children.val().user == this.state.user) {
                     selectedRoomNum = children.val().selectedRoomNum
                 }
             })
@@ -241,16 +216,14 @@ class Home extends React.Component {
     componentDidMount() {
         firebase.auth().onAuthStateChanged(
             (user) => {
-                if (user)
-                {
+                if (user) {
                     let userId = firebase.auth().currentUser
                     this.setState({
                         user: userId.displayName,
                         photo: userId.photoURL,
                     })
                 }
-                else
-                {
+                else {
                     this.setState({
                         user: null
                     })
@@ -264,33 +237,32 @@ class Home extends React.Component {
         const database = firebase.database()
         const PageLink = [];
         const PageRouter = [];
-        const RoomInformation = "RoomInformation"
-        const roomChatLog = database.ref(RoomInformation)
+        const roomChatLog = database.ref("RoomInformation")
 
         roomChatLog.on("value", (snapshot) => {
             snapshot.forEach((children) => {
-                PageLink.push(< Link to='children.val().roomNum' onClick={() => this.ClickChatRoom(children.val().roomNum)}><div className="ChatRoomLinkBox" >Room名:{children.val().roomName}</div></Link>)
+                console.log(children.val().roomNum)
+                PageLink.push(<Link to='children.val().roomNum' onClick={() => this.clickChatRoom(children.val().roomNum)}><div className="ChatRoomLinkBox" >Room名:{children.val().roomName}</div></Link>)
                 PageRouter.push(<Route path='children.val().roomNum'><ChatPage {...this.state} /></Route>)
             })
         })
+        console.log(PageLink)
         const doneMakeLog = database.ref("doneMakeRoom")
         let doneMakeRoom = 0
 
         doneMakeLog.on("value", (snapshot) => {
             snapshot.forEach((children) => {
-                if (children.val().user == this.state.user)
-                {
+                if (children.val().user == this.state.user) {
                     doneMakeRoom = children.val().doneMakeRoom
                 }
             })
         })
 
-        console.log("doneMakeRoom:" + doneMakeRoom)
         return (
             <div class="chatAll">
                 {
                     this.state.user ?
-                        (doneMakeRoom == 1 ? (<ChatPage {...this.state} addEventListener={this.addEventListener} chatBack={this.chatBack} handleMessage={this.handleMessage} logout={this.logout} RoomNumSelecter={this.roomNumSelecter} />) :
+                        (doneMakeRoom == 1 ? (<ChatPage {...this.state} nowRoomNumSetter={this.nowRoomNumSetter} addEventListener={this.addEventListener} chatBack={this.chatBack} handleMessage={this.handleMessage} logout={this.logout} RoomNumSelecter={this.roomNumSelecter} />) :
                             (
                                 <div className="ChatRoomContainer">
                                     <h1>Enter Chat Name</h1>
@@ -301,7 +273,7 @@ class Home extends React.Component {
                                         <ChatRoomTextBox  {...this.state} RoomNameHandler={this.roomNameHandler} />
                                     </div>
                                     <div className="ChatRoomTextButtonP">
-                                        <ChatRoomTextButton RoomSetter={this.roomSetter} />
+                                        <ChatRoomTextButton roomAdder={this.roomAdder} roomInformationAdder={this.roomInformationAdder} />
                                     </div>
                                     <Router>
                                         <div className="ChatRoomLinkContainer">

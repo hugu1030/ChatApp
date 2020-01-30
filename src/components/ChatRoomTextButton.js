@@ -5,10 +5,10 @@ class ChatRoomTextButton extends React.Component {
     render() {
         return (
             <div >
-                <input type="button" className="ChatRoomTextButton" value="Send" onClick={() => this.props.RoomSetter()} />
+                <input type="button" className="ChatRoomTextButton" value="Send" onClick={() => this.props.roomAdder()} />
             </div>
         )
     }
 }
 
-export default ChatRoomTextButton
+export default ChatRoomTextButton 
