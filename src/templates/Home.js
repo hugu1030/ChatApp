@@ -5,7 +5,6 @@ import ChatPage from '../components/Chat.js';
 import ChatRoomTextBox from '../components/ChatRoomTextBox.js';
 import ChatRoomTextButton from '../components/ChatRoomTextButton.js';
 import '../style/Home.css';
-
 import {
     BrowserRouter as Router,
     Switch,
@@ -25,34 +24,27 @@ class Home extends React.Component {
             nowRoomNum: 0,
             roomName: '',
             roomNameError: '',
-            forRender: 0,
+            Log: [],
         }
     }
-    componentDidMount() {
-        const database = firebase.database()
-        const nowRoomNumInfo = database.ref("nowRoomNum" + this.state.user)
-        nowRoomNumInfo.on("value", (snapshot) => {
-            snapshot.forEach((children) => {
-                if (children.val().user === this.state.user) {
-                    this.nowRoomNumSetter(children.val().nowSelectedRoomRoomNum)
-                } else {
-                    this.nowRoomNumSetter(0)
-                }
-            })
-        })
-    }
+
     setUser = (e) => {                             //ok
         this.setStata({
             user: e.target.value
         })
     }
 
-    nowRoomNumSetter = (nowRoomNumi) => {
+    /* nowRoomNumSetter = (nowRoomNumi) => {
+         console.log("nowRoom")
+         this.setState({
+             nowRoomNum: nowRoomNumi,
+         })
+     } */
+    logSetter = (log) => {
         this.setState({
-            nowRoomNum: nowRoomNumi,
+            Log: log,
         })
     }
-
 
     roomAdder = () => {                                 //roomNumを変更
         const database = firebase.database();
@@ -166,6 +158,22 @@ class Home extends React.Component {
         firebase.auth().signOut();
     }
 
+    nowRoomPuller = () => {
+        const database = firebase.database();
+        const nowRoomNumInfo = database.ref("nowRoomNum" + this.props.user)
+        nowRoomNumInfo.on("value", (snapshot) => {
+            console.log("value")
+            snapshot.forEach((children) => {
+                if (children.val().user === this.props.user) {
+                    console.log(this.state.user)
+                    return new Promise((resolve) => {
+                        resolve(children.val().nowSelectedRoomNum)
+                    })
+                }
+            })
+        })
+    }
+
     addEventListener = (Num) => {
         if (this.state.message == '') {
             return
@@ -174,18 +182,18 @@ class Home extends React.Component {
         let selectedRoomNum = 0
         const database = firebase.database();
         const selectedRoomNumLog = database.ref("nowRoomNum" + this.state.user)
-        /* selectedRoomNumLog.on("value", (snapshot) => {
-             snapshot.forEach((children) => {
-                 if (children.val().user == this.state.user) {
-                     selectedRoomNum = children.val().selectedRoomNum
- 
- 
-                 }
-                 this.setState({
-                     selectedRoomNum: selectedRoomNum
-                 })
-             })
-         })*/
+        selectedRoomNumLog.on("value", (snapshot) => {
+            snapshot.forEach((children) => {
+                if (children.val().user == this.state.user) {
+                    selectedRoomNum = children.val().selectedRoomNum
+
+
+                }
+                this.setState({
+                    selectedRoomNum: selectedRoomNum
+                })
+            })
+        })
 
         database.ref(Num).push({
             user: this.state.user,
@@ -214,48 +222,72 @@ class Home extends React.Component {
             })
         })
     }
+
     componentDidMount() {
+        console.log(this.state.nowRoomNum);
+        const database = firebase.database();
+        console.log("comD2");
         firebase.auth().onAuthStateChanged(
             (user) => {
                 if (user) {
-                    let userId = firebase.auth().currentUser
+                    console.log("user")
+                    let userId = firebase.auth().currentUser;
+                    console.log(userId.displayName)
                     this.setState({
                         user: userId.displayName,
                         photo: userId.photoURL,
                     })
+
+                    this.nowRoomNumSetter(userId.displayName)
                 }
                 else {
+                    console.log("else")
                     this.setState({
-                        user: null
+                        user: null,
                     })
                 }
             }
         )
+
+        // nowRoomNum.once('value').then(function (snapshot) {
+        //     let name = snapshot.val().nowSelectedRoomNum
+        //    this.setState({
+        //         nowRoomNum: name,
+        //   })
+        //}) 
+    }
+    nowRoomNumSetter = (name) => {
+        const database = firebase.database();
+        const nowRoomNum = database.ref("nowRoomNum" + name);
+        nowRoomNum.once('value').then((snapshot) => {
+            this.setState({
+                nowRoomNum: snapshot.val().nowSelectedRoomNum,
+            })
+        })
     }
 
+
     render() {
-        const database = firebase.database()
+        const database = firebase.database();
         const PageLink = [];
         const PageRouter = [];
-        const roomChatLog = database.ref("RoomInformation")
-        const nowRoomNumInfo = database.ref("nowRoomNum" + this.state.user)
+        const roomChatLog = database.ref("RoomInformation");
+        const nowRoomNumInfo = database.ref("nowRoomNum" + this.state.user);
         roomChatLog.on("value", (snapshot) => {
             snapshot.forEach((children) => {
-                console.log()
                 PageLink.push(<Link to='children.val().roomNum' onClick={() => this.clickChatRoom(children.val().roomNum)}><div className="ChatRoomLinkBox" >Room名:{children.val().roomName}</div></Link>)
                 PageRouter.push(<Route path='children.val().roomNum'><ChatPage {...this.state} /></Route>)
             })
         })
 
-        console.log(this.state.nowRoomNum)
         return (
-
-            < div class="chatAll" >
+            <div class="chatAll" >
                 {
-                    this.state.user ?
-                        (this.state.nowRoomNum != 0 ? (<ChatPage {...this.state} nowRoomNumSetter={this.nowRoomNumSetter} addEventListener={this.addEventListener} chatBack={this.chatBack} handleMessage={this.handleMessage} logout={this.logout} RoomNumSelecter={this.roomNumSelecter} />) :
-                            (
+                    this.state.user ? (
+                        this.state.nowRoomNum != 0 ? (<div class="chatAll"> <ChatPage {...this.state} nowRoomNumSetter={this.nowRoomNumSetter} logSetter={this.logSetter} addEventListener={this.addEventListener} chatBack={this.chatBack} handleMessage={this.handleMessage} logout={this.logout} RoomNumSelecter={this.roomNumSelecter} /></div>) :
+                            (<div class="chatAll">
                                 <div className="ChatRoomContainer">
+                                    {console.log("予想通り")}
                                     <h1>Enter Chat Name</h1>
                                     <div className="ErrorMessage">
                                         {this.state.roomNameError}
@@ -275,13 +307,16 @@ class Home extends React.Component {
                                         </Switch>
                                     </Router>
                                 </div>
-
-                            )) : (<Login {...this.state} logout={this.logout} login={this.login} />
-                        )
+                            </div>
+                            )
+                    ) :
+                        (<div><Login {...this.state} logout={this.logout} login={this.login} /></div>)
                 }
             </div >
+
         )
     }
 }
 
 export default Home
+

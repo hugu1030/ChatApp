@@ -1,6 +1,7 @@
 {
   "projects": {
     "default": "react-chat-293c3",
-    "y": "react-chat-293c3"
+    "y": "react-chat-293c3",
+    "chat": "react-chat-293c3"
   }
 }

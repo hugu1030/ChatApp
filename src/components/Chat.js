@@ -3,8 +3,10 @@ import firebase from '../firebase/config.js';
 import '../style/Chat.css';
 
 class Chat extends React.Component {
-    logMaker = (nowRoomNum) => {
+
+    componentDidMount() {
         const database = firebase.database();
+        let nowRoomNum = this.props.nowRoomNum;
         const ChatLog = database.ref(nowRoomNum);
         let Log = [];
         ChatLog.on("value", (snapshot) => {
@@ -12,8 +14,13 @@ class Chat extends React.Component {
                 let ob = { user: children.val().user, message: children.val().message, photo: children.val().photo }
                 Log.push(ob)
             })
+            console.log(Log)
         })
-        return Log;
+        setTimeout(() => {
+            this.props.logSetter(Log);
+            console.log(Log)
+        }, 300)
+
     }
 
     render() {
@@ -21,21 +28,18 @@ class Chat extends React.Component {
         let nowRoomNum = this.props.nowRoomNum;
         const currentUser = firebase.auth().currentUser;
         const database = firebase.database();
-        let selectedRoomNum;
-        let Log = this.logMaker(nowRoomNum);
-        console.log(Log);
-
+        //let Log =
         return (
             < div className="chatPage" >
-                {console.log("returnが呼ばれ増田")}
+                {console.log("returnが呼ばれます")}
                 <div className="userNamePosition"><a className="userName">User:{this.props.user}</a></div>
                 <input type="text" className="chatText" onChange={(e) => this.props.handleMessage(e)} value={this.props.message} placeholder="Message" />
                 <input type="button" className="chatButton" onClick={() => this.props.addEventListener(nowRoomNum)} value="send" />
                 <input type="button" className="chatLogout" onClick={() => this.props.logout()} value="logout" />
                 <input type="button" className="chatBack" onClick={() => this.props.chatBack()} value="back" />
                 <div className="chatDisplayArea">
-                    {Log.map((chat, index) => {
-
+                    {this.props.Log.map((chat, index) => {
+                        { console.log("returnが呼ばれません") }
                         return (
                             (chat.user == currentUser.displayName) ? (<div className="currentUser"><div className="userPhotoPosition"><img src={chat.photo} className="userPhoto" /></div>
                                 <div className="currentUserMessagePosition"><p className="currentUserMessage">{chat.message}</p></div>
