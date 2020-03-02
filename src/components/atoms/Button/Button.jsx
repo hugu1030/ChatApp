@@ -4,27 +4,31 @@ import color from "../../../utils/color";
 
 const Button = styled.button`
   border: 3px solid ${color.gray};
-  border-radius: 3px;
-  background-color: ${color.white};
-  color: ${color.gray};
-  font-size: 20px;
+  border-radius: 5px;
+  color: ${color.white};
+  font-size: 15px;
+  font-family: cursive;
   padding: 0.25em 1em;
+  margin: 0px auto;
   &[size="small"] {
     font-size: 10px;
   }
   &[size="middle"] {
     font-size: 30px;
   }
-  $[size="big"] {
+  &[size="big"] {
     font-size: 40px;
   }
-  $[color="green"] {
+  &[color="green"] {
     background-color: ${color.green};
     border-color: ${color.greenLight};
   }
-  $[color="blue"] {
+  &[color="blue"] {
     background-color: ${color.blue};
     border-color: ${color.blueDark};
+  }
+  &:active {
+    background: ${color.royalblue};
   }
 `;
 

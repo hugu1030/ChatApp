@@ -1,11 +1,12 @@
 import React from "react";
 import styled from "styled-components";
+import color from "../../../utils/color";
 
 const Input = styled.input`
-  width: 15px;
-  height: 12px;
+  width: 50%;
+  height: 30%;
   placeholder: ${props => props.placeholder};
-  &:hover {
+  &:active {
     border: solid 2px ${color.blue};
   }
 `;

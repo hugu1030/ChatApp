@@ -7,6 +7,7 @@ const Label = styled.label`
   font-size: 12px;
   color: ${color.black};
   text-align: center;
+  margin: 20px auto;
   &[size="small"] {
     font-size: 10px;
   }
