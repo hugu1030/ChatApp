@@ -48,17 +48,37 @@ export default {
       });
   },
   newLogin: (mail, name, password) => {
-    axios
-      .post("http://localhost:8081/newLogin", {
-        mail: mail,
-        name: name,
-        password: password
-      })
+    const request = {
+      mail: mail,
+      name: name,
+      password: password
+    };
+
+    fetch("http://localhost:8081/newLogin", {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "omit",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(request)
+    })
       .then(response => {
-        console.log(JSON.stringify(response.data));
+        if (response.status == 500) {
+          throw "Error in Database";
+        } else if (response.status == 501) {
+          throw "Mail is already registered";
+        }
+        return response.json();
+      })
+      .then(reader => {
+        console.log("登録に成功しました");
+        return reader;
       })
       .catch(error => {
         console.log(error);
+        // return error;
       });
   }
 };

@@ -44,7 +44,9 @@ export default ({ useLogin }) => {
         ></LabelInput>
         <ButtonContainer>
           <Button
-            onClick={api.login(useLogin.mail, useLogin.name, useLogin.password)}
+            onClick={() =>
+              api.newLogin(useLogin.mail, useLogin.name, useLogin.password)
+            }
             color="blue"
             size="small"
           >
