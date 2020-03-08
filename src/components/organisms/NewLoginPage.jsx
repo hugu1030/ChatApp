@@ -11,6 +11,8 @@ import LabelInput from "../molecules/LabelInput";
 import color from "../../utils/color";
 import { LoginContainer } from "../containers/LoginContainer";
 
+import api from "../../api";
+
 export default ({ useLogin }) => {
   return (
     <LoginDiv>
@@ -41,7 +43,11 @@ export default ({ useLogin }) => {
           value={useLogin.password}
         ></LabelInput>
         <ButtonContainer>
-          <Button color="blue" size="small">
+          <Button
+            onClick={api.login(useLogin.mail, useLogin.name, useLogin.password)}
+            color="blue"
+            size="small"
+          >
             登録する
           </Button>
         </ButtonContainer>

@@ -14,6 +14,8 @@ import LabelInput from "../molecules/LabelInput";
 
 import color from "../../utils/color";
 
+import api from "../../api";
+
 const LoginPage = ({ ...useLogin }) => {
   return (
     <LoginDiv>
@@ -42,7 +44,11 @@ const LoginPage = ({ ...useLogin }) => {
           ) : (
             <ErrorMessage></ErrorMessage>
           )}
-          <Button color="blue" size="small">
+          <Button
+            onClick={() => api.login(useLogin.mail, useLogin.password)}
+            color="blue"
+            size="small"
+          >
             ログイン
           </Button>
         </ButtonContainer>
